@@ -1,4 +1,4 @@
-INSERT INTO departments (name)
+INSERT INTO departments (title)
 VALUES  ('Engineering'),
         ('Finance'),
         ('Legal'),
@@ -20,11 +20,10 @@ VALUES  ('John', 'Doe', 1, null, true, true),
         ('Kevin', 'Tupik', 3, null, true, true),
         ('Kunal', 'Singh', 4, 2, false, true),
         ('Malia', 'Brown', 4, 2, false, true),
-
-        ('John', 'Winger', 4, 2, false, true),
-        ('Pete', 'McFall', 5, null, true, true),
-        ('Alexis', 'Caper', 6, 3, false, true),
-        ('Mason', 'Jacobson', 6, 3, false, true);
+        ('John', 'Belinger', 4, 2, false, true),
+        ('Pete', 'Bolotin', 5, null, true, true),
+        ('Alex', 'Crown', 6, 3, false, true),
+        ('Matt', 'Jacobson', 6, 3, false, true);
 
 INSERT INTO managers (first_name, last_name)
 SELECT first_name, last_name
