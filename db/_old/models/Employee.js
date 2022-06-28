@@ -72,10 +72,9 @@ const { Sequelize } = require("sequelize");
 module.exports = (sequelize) => {
   const Employee = sequelize.define("Employee", {
     id: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
+      type: Sequelize.UUID,
+      defaultValue: Sequelize.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     first_name: {
       type: Sequelize.STRING,
