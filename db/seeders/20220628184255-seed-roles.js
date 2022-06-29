@@ -7,37 +7,36 @@ module.exports = {
       [
         {
           title: "Sales Lead",
-          department_id: 4,
           createdAt: new Date(),
           updatedAt: new Date()
         },
         {
           title: "Salesperson",
-          department_id: 4,
           createdAt: new Date(),
           updatedAt: new Date()
         },
         {
           title: "Lead Engineer",
-          department_id: 1,
           createdAt: new Date(),
           updatedAt: new Date()
         },
         {
           title: "Software Engineer",
-          department_id: 1,
           createdAt: new Date(),
           updatedAt: new Date()
         },
         {
           title: "Legal Team Lead",
-          department_id: 3,
           createdAt: new Date(),
           updatedAt: new Date()
         },
         {
           title: "Lawyer",
-          department_id: 3,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          title: "Accountant",
           createdAt: new Date(),
           updatedAt: new Date()
         }

@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Department.init({
-    id: DataTypes.INTEGER,
     title: DataTypes.STRING
   }, {
     sequelize,

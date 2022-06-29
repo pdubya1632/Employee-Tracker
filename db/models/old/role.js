@@ -10,14 +10,29 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Role.belongsTo(models.Department);
+      // Role.belongsTo(models.Employee);
     }
   }
   Role.init({
-    title: DataTypes.STRING
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: false,
+    },
+    title: DataTypes.STRING,
+    department_id: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: 'Department',
+        key: 'id'
+      }
+    }
   }, {
     sequelize,
-    modelName: 'Role',
+    modelName: 'Roles',
   });
   return Role;
 };

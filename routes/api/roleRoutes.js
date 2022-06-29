@@ -20,6 +20,7 @@ router.get('/', async (req, res) => {
     //   },
     });
     res.status(200).json(roleData);
+    printTable(roleData);
   } catch (err) {
     res.status(500).json(err);
   }
