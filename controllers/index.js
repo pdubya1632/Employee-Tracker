@@ -1,15 +1,18 @@
 const { Employee, Department, Role } = require("../db/models");
 
-// const listEmployees = async (req, res) => {
-//   try {
-//     const employees = await Employee.findAll({});
-//     return res.status(201).json({
-//       employees,
-//     });
-//   } catch (error) {
-//     return res.status(500).json({ error: error.message });
-//   }
-// };
+/*
+    LIST, CREATE, UPDATE EMPLOYEE
+*/
+const listEmployees = async (req, res) => {
+  try {
+    const employees = await Employee.findAll({});
+    return res.status(201).json({
+      employees,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
 
 const createEmployee = async (req, res) => {
   try {
@@ -25,11 +28,11 @@ const createEmployee = async (req, res) => {
 const updateEmployee = async (req, res) => {
   try {
     const { id } = req.params;
-    const [updated] = await User.update(req.body, {
+    const [updated] = await Employee.update(req.body, {
       where: { id: id },
     });
     if (updated) {
-      const updatedEmployee = await User.findOne({ where: { id: id } });
+      const updatedEmployee = await Employee.findOne({ where: { id: id } });
       return res.status(200).json({ employee: updatedEmployee });
     }
     throw new Error("Employee not found");
@@ -38,6 +41,9 @@ const updateEmployee = async (req, res) => {
   }
 };
 
+/*
+    CREATE ROLE
+*/
 const createRole = async (req, res) => {
   try {
     const newRole = await Role.create(req.body);
@@ -49,6 +55,9 @@ const createRole = async (req, res) => {
   }
 };
 
+/*
+    CREATE DEPARTMENT
+*/
 const createDepartment = async (req, res) => {
   try {
     const newDepartment = await Department.create(req.body);
@@ -61,6 +70,7 @@ const createDepartment = async (req, res) => {
 };
 
 module.exports = {
+  listEmployees,
   createEmployee,
   updateEmployee,
   createRole,

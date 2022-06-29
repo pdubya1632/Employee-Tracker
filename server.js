@@ -5,21 +5,21 @@ const logger = require('morgan');
 
 const PORT = process.env.PORT || 3000;
 
-const app = express();
-app.use(bodyParser.json());
-app.use(logger('dev'));
-app.use('/api', routes);
+const server = express();
+server.use(bodyParser.json());
+server.use(logger('dev'));
+server.use('/api', routes);
 
 const db = require("./config/connection");
 
-const initApp = async () => {
+const initServer = async () => {
   console.log("Testing the database connection..");
 
   try {
     await db.authenticate();
     console.log("Connection has been established successfully.");
 
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server is up and running at: http://localhost:${PORT}`);
     });
   } catch (error) {
@@ -27,4 +27,4 @@ const initApp = async () => {
   }
 };
 
-initApp();
+initServer();
