@@ -3,11 +3,11 @@ const { Employee, Department, Role } = require("../db/models");
 /*
     LIST, CREATE, UPDATE EMPLOYEE
 */
-const listEmployees = async (req, res) => {
+const viewEmployees = async (req, res) => {
   try {
     const employees = await Employee.findAll({});
     return res.status(201).json({
-      employees,
+      employees
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -18,14 +18,14 @@ const createEmployee = async (req, res) => {
   try {
     const newEmployee = await Employee.create(req.body);
     return res.status(201).json({
-      newEmployee,
+      newEmployee
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 };
 
-const updateEmployee = async (req, res) => {
+const updateEmployeeRole = async (req, res) => {
   try {
     const { id } = req.params;
     const [updated] = await Employee.update(req.body, {
@@ -42,8 +42,19 @@ const updateEmployee = async (req, res) => {
 };
 
 /*
-    CREATE ROLE
+    LIST, CREATE ROLE
 */
+const viewRoles = async (req, res) => {
+    try {
+      const roles = await Roles.findAll({});
+      return res.status(201).json({
+        roles
+      });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  };
+
 const createRole = async (req, res) => {
   try {
     const newRole = await Role.create(req.body);
@@ -56,8 +67,19 @@ const createRole = async (req, res) => {
 };
 
 /*
-    CREATE DEPARTMENT
+    LIST, CREATE DEPARTMENT
 */
+const viewDepartments = async (req, res) => {
+    try {
+      const departments = await Departments.findAll({});
+      return res.status(201).json({
+        departments
+      });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  };
+
 const createDepartment = async (req, res) => {
   try {
     const newDepartment = await Department.create(req.body);
@@ -70,9 +92,11 @@ const createDepartment = async (req, res) => {
 };
 
 module.exports = {
-  listEmployees,
+  viewEmployees,
   createEmployee,
-  updateEmployee,
+  updateEmployeeRole,
+  viewRoles,
   createRole,
-  createDepartment,
+  viewDepartments,
+  createDepartment
 };

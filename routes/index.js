@@ -4,11 +4,12 @@ const router = Router();
 
 router.get('/', (req, res) => res.send('You, dear user, have reached the root.'));
 
-// router.post('/employees', controllers.createUser);
-router.get('/employees', controllers.listEmployees);
+router.get('/employees', controllers.viewEmployees);
 router.post('/employees', controllers.createEmployee);
-router.put('/employees/:id', controllers.updateEmployee);
+router.put('/employees/:id', controllers.updateEmployeeRole);
+router.get('/roles', controllers.viewRoles);
 router.post('/roles', controllers.createRole);
+router.get('/departments', controllers.viewDepartments);
 router.post('/departments', controllers.createDepartment);
 
 module.exports = router;
