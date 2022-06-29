@@ -1,7 +1,10 @@
-const router = require('express').Router();
+const { Router } = require('express');
+const controllers = require('../controllers');
+const router = Router();
 
-const apiRoutes = require('./api');
+router.get('/', (req, res) => res.send('This is root!'));
 
-router.use('/api', apiRoutes);
+// router.post('/employees', controllers.createUser)s;
+router.get('/employees', controllers.listEmployees);
 
 module.exports = router;

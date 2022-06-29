@@ -1,6 +1,6 @@
 const router = require("express").Router();
 // const sequelize = require('../../config/connection');
-const { Employee, Department, Role } = require("../../models");
+const { Employee, Department, Role } = require("../../db/models");
 
 const { printTable } = require('console-table-printer');
 
