@@ -1,5 +1,8 @@
 const enquirer = require("enquirer");
 const yosay = require("yosay");
+// const { printTable } = require('console-table-printer');
+
+const { Department } = require("./db/models");
 
 const startChoices = [
   { message: "View All Employees", value: "viewAllEmployees" },
@@ -27,9 +30,11 @@ const runCli = async () => {
         header: yosay("Welcome to the WORLD CORP Employee Database"),
         choices: [...startChoices],
       });
-    } else if (selection === "viewAllEmployees") {
-      console.log("view all employees");
-    } else if (selection === "addEmployee") {
+    }
+    else if (selection === "viewAllEmployees") {
+      console.log("viewAllEmployees");
+    }
+    else if (selection === "addEmployee") {
       currentPrompt = new enquirer.Form({
         name: "employee",
         message: "Please provide their name:",
@@ -38,19 +43,26 @@ const runCli = async () => {
           { name: "last_name", message: "Last Name" },
         ],
       });
-    } else if (selection === "updateEmployeeRole") {
+    }
+    else if (selection === "updateEmployeeRole") {
       console.log("update employee role");
-    } else if (selection === "viewAllRoles") {
+    }
+    else if (selection === "viewAllRoles") {
       console.log("view all roles");
-    } else if (selection === "addRole") {
+    }
+    else if (selection === "addRole") {
       console.log("add new roles");
-    } else if (selection === "viewDepartments") {
-      console.log("view all departments");
-    } else if (selection === "addDepartment") {
+    }
+    else if (selection === "viewDepartments") {
+      const results = await Department.findAll();
+      console.log(results);
+    }
+    else if (selection === "addDepartment") {
       currentPrompt = new enquirer.Input({
         message: "What is the new Department called?",
       });
-    } else {
+    }
+    else {
       quit = true;
       break;
     }
@@ -59,8 +71,14 @@ const runCli = async () => {
     console.log("current selection: " + selection);
     // return;
   }
-  console.log("Thanks for using the cli!");
+  console.log("Thank you and have a pleasant day.");
   // return;
 };
 
+const runTest = async () => {
+  const results = await Department.findAll();
+  console.log(results.dataValues);
+}
+
+// runTest();
 runCli();
