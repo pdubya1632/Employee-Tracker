@@ -1,12 +1,12 @@
 const { prompt } = require("enquirer");
 const yosay = require("yosay");
-require("console.table");
 
 const db = require("./models");
+const controller = require("./controllers");
 
 /*------*/
 
-const addEmployee = async () => {
+const createEmployee = async () => {
   prompt([
     {
       type: "input",
@@ -29,7 +29,7 @@ const addEmployee = async () => {
       name: "role",
       message: "What is their Role in the company?",
       choices: function listRoles() {
-        return db.role.findAll();
+        return db.roles.findAll();
       },
     },
     {
@@ -42,11 +42,20 @@ const addEmployee = async () => {
       name: "manager",
       message: "Who is their Manager?",
       choices: [{ message: "manager1" }, { message: "manager2" }],
-      when: (answers) => answers.isManager === true,
+      when: (answers) => answers.isManager === false,
     },
   ]).then((res) => {
     console.log(res.first_name + " has been added.");
+    askAgain();
   });
+};
+
+const listEmployees = async () => {
+  const emp = await db.employees.findAll({ raw: true });
+  const result = emp.map((a) => {
+    return `${a.first_name} ${a.last_name}`;
+  });
+  return result;
 };
 
 const updateEmployeeRole = async () => {
@@ -55,25 +64,23 @@ const updateEmployeeRole = async () => {
       type: "select",
       name: "employee",
       message: "Which Employee?",
-      choices: function listEmployees() {
-        const emp = db.employee.findAll();
-        return;
-      },
+      choices: listEmployees(),
     },
     {
       type: "select",
       name: "role",
       message: "What is their new Role?",
       choices: function listRoles() {
-        return db.role.findAll();
+        return db.roles.findAll();
       },
     },
   ]).then((res) => {
-    console.log(res + "has been added.");
+    console.log(res.employee + " is now a " + res.role);
+    askAgain();
   });
 };
 
-const addRole = async () => {
+const createRole = async () => {
   prompt([
     {
       message: "What is the new Role called?",
@@ -86,17 +93,19 @@ const addRole = async () => {
     {
       message: "Which Department does the new Role belong to?",
       type: "select",
-      name: "department",
+      name: "departmentId",
       choices: function listDepartments() {
-        return db.department.findAll();
+        return db.departments.findAll();
       },
     },
   ]).then((res) => {
-    console.log(res.title + " has been added to " + res.department);
+    controller.addRole({ title: res.title, departmentId: res.departmentId }).then(() => {
+      askAgain();
+    });
   });
 };
 
-const addDepartment = async () => {
+const createDepartment = async () => {
   prompt([
     {
       message: "What is the new Department called?",
@@ -107,45 +116,69 @@ const addDepartment = async () => {
       },
     },
   ]).then((res) => {
-    console.log(res.title + " has been added");
+    controller.addDepartment({ title: res.title }).then(() => {
+      askAgain();
+    });
+  });
+};
+
+const askAgain = async () => {
+  prompt([
+    {
+      message: "Would you like to execute another command?",
+      type: "toggle",
+      name: "continue",
+    },
+  ]).then((res) => {
+    if (res.continue) {
+      startQuestion();
+    } else {
+      console.log(
+        "Thank you for using the WORLD CORP Employee Database. Goodbye."
+      );
+      process.exit();
+    }
   });
 };
 
 const followUp = async (res) => {
   let output;
 
+  console.log(res.command);
+
   switch (res.command) {
     case "viewAllEmployees":
-      output = await db.employee.findAll({ raw: true });
+      output = await db.employees.findAll({ raw: true });
       console.table(output);
+      askAgain();
       break;
-    case "addEmployee":
-      addEmployee();
+    case "createEmployee":
+      createEmployee();
       break;
     case "updateEmployeeRole":
-      // updateEmployeeRole();
-      // output = await db.employee.findAll({ raw: true });
-      output = await db.employee.findAll();
-      console.log(JSON.stringify(output, null, 2));
+      updateEmployeeRole();
       break;
     case "viewAllRoles":
-      output = await db.role.findAll({ raw: true });
+      output = await db.roles.findAll({ raw: true });
       console.table(output);
+      askAgain();
       break;
-    case "addRole":
-      addRole();
+    case "createRole":
+      createRole();
       break;
     case "viewAllDepartments":
-      output = await db.department.findAll({ raw: true });
+      output = await db.departments.findAll({ raw: true });
       console.table(output);
+      askAgain();
       break;
-    case "addDepartment":
-      addDepartment();
+    case "createDepartment":
+      createDepartment();
       break;
     default:
       console.log(
         "Thank you for using the WORLD CORP Employee Database. Goodbye."
       );
+      process.exit();
   }
 };
 
@@ -157,14 +190,14 @@ const startQuestion = async () => {
     header: yosay("Welcome to the WORLD CORP Employee Database"),
     choices: [
       { message: "View All Employees", value: "viewAllEmployees" },
-      { message: "Add Employee", value: "addEmployee" },
+      { message: "Add Employee", value: "createEmployee" },
       { message: "Update Employee Role", value: "updateEmployeeRole" },
       // new Separator(),
       { message: "View All Roles", value: "viewAllRoles" },
-      { message: "Add New Role", value: "addRole" },
+      { message: "Add New Role", value: "createRole" },
       // new Separator(),
       { message: "View All Departments", value: "viewAllDepartments" },
-      { message: "Add New Department", value: "addDepartment" },
+      { message: "Add New Department", value: "createDepartment" },
       // new Separator(),
       { message: "Quit", value: "quit" },
     ],

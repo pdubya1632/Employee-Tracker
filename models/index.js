@@ -20,8 +20,14 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.employee = require("./employee.model.js")(sequelize, Sequelize);
-db.department = require("./department.model.js")(sequelize, Sequelize);
-db.role = require("./role.model.js")(sequelize, Sequelize);
+db.employees = require("./employee.model.js")(sequelize, Sequelize);
+db.departments = require("./department.model.js")(sequelize, Sequelize);
+db.roles = require("./role.model.js")(sequelize, Sequelize);
+
+db.departments.hasMany(db.roles, { as: "roles" });
+db.roles.belongsTo(db.departments, {
+  foreignKey: "departmentId",
+  as: "department",
+});
 
 module.exports = db;
