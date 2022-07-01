@@ -31,7 +31,7 @@ exports.addDepartment = (department) => {
     return Department.create({
       title: department.title,
     })
-      .then((tutorial) => {
+      .then((department) => {
         console.log(
           ">> Created department: " + JSON.stringify(department, null, 4)
         );
