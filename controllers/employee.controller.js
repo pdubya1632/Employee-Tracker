@@ -36,31 +36,12 @@ module.exports = {
       });
   },
 
-  updateRole: async (id, roleId) => {
-    return await Employee.update(
-      {
-        roleId: roleId,
-      },
-      {
-        where: {
-          id: id,
-        },
-      }
-    )
-      .then((res) => {
-        console.log('>> Updated Employee Role');
-        return res;
-      })
-      .catch((err) => {
-        console.log('>> Error while updating role: ', err);
-      });
-  },
-
   findAllManagers: async () => {
     return await Employee.findAll({
       where: { is_manager: true },
     })
       .then((res) => {
+        // TODO: turn data formatting into function
         const employeeData = res.map((record) => record.toJSON());
 
         let choices = employeeData.reduce((acc, cur) => {
@@ -85,6 +66,26 @@ module.exports = {
       })
       .catch((err) => {
         console.log('>> Error while getting Employees: ', err);
+      });
+  },
+
+  updateRole: async (id, roleId) => {
+    return await Employee.update(
+      {
+        roleId: roleId,
+      },
+      {
+        where: {
+          id: id,
+        },
+      }
+    )
+      .then((res) => {
+        console.log('>> Updated Employee Role');
+        return res;
+      })
+      .catch((err) => {
+        console.log('>> Error while updating role: ', err);
       });
   },
 
