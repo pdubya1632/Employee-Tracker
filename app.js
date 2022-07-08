@@ -84,10 +84,9 @@ const updateEmployeeRole = async () => {
       },
     },
   ]).then((res) => {
-    console.log(res);
-    // Employee.updateRole(res.employeeId, res.roleId).then(() => {
-    //   askAgain();
-    // });
+    Employee.updateRole(res.employeeId, res.roleId).then(() => {
+      askAgain();
+    });
   });
 };
 
