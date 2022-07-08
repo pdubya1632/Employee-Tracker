@@ -1,5 +1,10 @@
 const dbConfig = require("../config/db.config.js");
 const Sequelize = require("sequelize");
+const fs = require("fs");
+const path = require('path');
+
+const filebasename = path.basename(__filename);
+const db = {};
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
@@ -15,19 +20,27 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   }
 });
 
-const db = {};
+fs
+  .readdirSync(__dirname)
+  .filter((file) => {
+    const returnFile = (file.indexOf('.') !== 0)
+      && (file !== filebasename)
+      && (file.slice(-3) === '.js');
+    return returnFile;
+  })
+  .forEach((file) => {
+    const model = require(path.join(__dirname, file))(sequelize, Sequelize)
+    db[model.name] = model;
+  });
+
+
+Object.keys(db).forEach((modelName) => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-
-db.employees = require("./employee.model.js")(sequelize, Sequelize);
-db.departments = require("./department.model.js")(sequelize, Sequelize);
-db.roles = require("./role.model.js")(sequelize, Sequelize);
-
-db.departments.hasMany(db.roles, { as: "roles" });
-db.roles.belongsTo(db.departments, {
-  foreignKey: "departmentId",
-  as: "department",
-});
 
 module.exports = db;

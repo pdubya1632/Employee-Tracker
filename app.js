@@ -1,182 +1,195 @@
-const { prompt } = require("enquirer");
-const yosay = require("yosay");
+const { prompt } = require('enquirer');
+const yosay = require('yosay');
+const { Employee, Role, Department } = require('./controllers');
 
-const db = require("./models");
-const controller = require("./controllers");
+/* EMPLOYEE */
 
-/*------*/
-
-const createEmployee = async () => {
+const addEmployee = async () => {
   prompt([
     {
-      type: "input",
-      name: "first_name",
+      type: 'input',
+      name: 'first_name',
       message: "What is the new Employee's first name?",
       validate: function validateFirstName(name) {
-        return name !== "";
+        return name !== '';
       },
     },
     {
-      type: "input",
-      name: "last_name",
-      message: "What is their last name?",
+      type: 'input',
+      name: 'last_name',
+      message: (state) =>
+        `What is ${state.answers.first_name}'s last name?`,
       validate: function validateLastName(name) {
-        return name !== "";
+        return name !== '';
       },
     },
     {
-      type: "select",
-      name: "role",
-      message: "What is their Role in the company?",
-      choices: function listRoles() {
-        return db.roles.findAll();
+      type: 'select',
+      name: 'roleId',
+      message: (state) =>
+        `What is ${state.answers.first_name}'s Role?`,
+      choices: Role.findAllChoices(),
+      result(name) {
+        return this.map(name)[name];
       },
     },
     {
-      type: "confirm",
-      name: "isManager",
-      message: (answers) => `Is ${answers.first_name} a Manager?`,
+      type: 'input',
+      name: 'salary',
+      message: (state) =>
+        `What is ${state.answers.first_name}'s yearly Salary?`,
     },
     {
-      type: "select",
-      name: "manager",
-      message: "Who is their Manager?",
-      choices: [{ message: "manager1" }, { message: "manager2" }],
-      when: (answers) => answers.isManager === false,
+      type: 'toggle',
+      name: 'isManager',
+      message: (state) => `Is ${state.answers.first_name} a Manager?`,
+    },
+    {
+      type: 'select',
+      name: 'managerId',
+      message: 'Who is their Manager?',
+      choices: Employee.findAllManagers(),
+      skip() {
+        if (this.state.answers.isManager) {
+          return true;
+        }
+        return false;
+      },
     },
   ]).then((res) => {
-    console.log(res.first_name + " has been added.");
-    askAgain();
+    Employee.create(res).then(() => {
+      askAgain();
+    });
   });
-};
-
-const listEmployees = async () => {
-  const emp = await db.employees.findAll({ raw: true });
-  const result = emp.map((a) => {
-    return `${a.first_name} ${a.last_name}`;
-  });
-  return result;
 };
 
 const updateEmployeeRole = async () => {
   prompt([
     {
-      type: "select",
-      name: "employee",
-      message: "Which Employee?",
-      choices: listEmployees(),
+      type: 'select',
+      name: 'employeeId',
+      message: 'Which Employee?',
+      choices: Employee.findAllChoices(),
+      result(name) {
+        return this.map(name)[name];
+      },
     },
     {
-      type: "select",
-      name: "role",
-      message: "What is their new Role?",
-      choices: function listRoles() {
-        return db.roles.findAll();
+      type: 'select',
+      name: 'roleId',
+      message: 'What is their new Role?',
+      choices: Role.findAllChoices(),
+      result(name) {
+        return this.map(name)[name];
       },
     },
   ]).then((res) => {
-    console.log(res.employee + " is now a " + res.role);
-    askAgain();
+    console.log(res);
+    // Employee.updateRole(res.employeeId, res.roleId).then(() => {
+    //   askAgain();
+    // });
   });
 };
 
-const createRole = async () => {
+/* ROLE */
+
+const addRole = async () => {
   prompt([
     {
-      message: "What is the new Role called?",
-      type: "input",
-      name: "title",
+      message: 'What is the new Role called?',
+      type: 'input',
+      name: 'title',
       validate: function validateRole(name) {
-        return name !== "";
+        return name !== '';
       },
     },
     {
-      message: "Which Department does the new Role belong to?",
-      type: "select",
-      name: "departmentId",
-      choices: function listDepartments() {
-        return db.departments.findAll();
-      },
+      message: 'Which Department does the new Role belong to?',
+      type: 'select',
+      name: 'departmentId',
+      choices: Department.findAllChoices(),
     },
   ]).then((res) => {
-    controller.addRole({ title: res.title, departmentId: res.departmentId }).then(() => {
+    Role.create(res.title, res.departmentId).then(() => {
       askAgain();
     });
   });
 };
 
-const createDepartment = async () => {
+/* DEPARTMENT */
+
+const addDepartment = async () => {
   prompt([
     {
-      message: "What is the new Department called?",
-      type: "input",
-      name: "title",
+      message: 'What is the new Department called?',
+      type: 'input',
+      name: 'title',
       validate: function validateDepartment(name) {
-        return name !== "";
+        return name !== '';
       },
     },
   ]).then((res) => {
-    controller.addDepartment({ title: res.title }).then(() => {
+    Department.create(res.title).then(() => {
       askAgain();
     });
   });
 };
+
+/* APP */
 
 const askAgain = async () => {
   prompt([
     {
-      message: "Would you like to execute another command?",
-      type: "toggle",
-      name: "continue",
+      message: 'Would you like to execute another command?',
+      type: 'toggle',
+      name: 'continue',
     },
   ]).then((res) => {
     if (res.continue) {
       startQuestion();
     } else {
       console.log(
-        "Thank you for using the WORLD CORP Employee Database. Goodbye."
+        'Thank you for using the WORLD CORP Employee Database. Goodbye.'
       );
       process.exit();
     }
   });
 };
 
-const followUp = async (res) => {
-  let output;
-
-  console.log(res.command);
+const commandRouter = async (res) => {
+  let data;
 
   switch (res.command) {
-    case "viewAllEmployees":
-      output = await db.employees.findAll({ raw: true });
-      console.table(output);
+    case 'viewAllEmployees':
+      data = await Employee.findAll();
+      console.table(data);
       askAgain();
       break;
-    case "createEmployee":
-      createEmployee();
+    case 'addEmployee':
+      addEmployee();
       break;
-    case "updateEmployeeRole":
+    case 'updateEmployeeRole':
       updateEmployeeRole();
       break;
-    case "viewAllRoles":
-      output = await db.roles.findAll({ raw: true });
-      console.table(output);
+    case 'viewAllRoles':
+      data = await Role.findAll();
+      console.table(data);
       askAgain();
       break;
-    case "createRole":
-      createRole();
+    case 'addRole':
+      addRole();
       break;
-    case "viewAllDepartments":
-      output = await db.departments.findAll({ raw: true });
-      console.table(output);
+    case 'viewAllDepartments':
+      data = await Department.findAll();
+      console.table(data);
       askAgain();
       break;
-    case "createDepartment":
-      createDepartment();
+    case 'addDepartment':
+      await addDepartment();
       break;
     default:
       console.log(
-        "Thank you for using the WORLD CORP Employee Database. Goodbye."
+        'Thank you for using the WORLD CORP Employee Database. Goodbye.'
       );
       process.exit();
   }
@@ -184,25 +197,31 @@ const followUp = async (res) => {
 
 const startQuestion = async () => {
   prompt({
-    type: "select",
-    name: "command",
-    message: "Execute your command:",
-    header: yosay("Welcome to the WORLD CORP Employee Database"),
+    type: 'select',
+    name: 'command',
+    message: 'Execute your command:',
+    header: yosay('Welcome to the WORLD CORP Employee Database'),
     choices: [
-      { message: "View All Employees", value: "viewAllEmployees" },
-      { message: "Add Employee", value: "createEmployee" },
-      { message: "Update Employee Role", value: "updateEmployeeRole" },
-      // new Separator(),
-      { message: "View All Roles", value: "viewAllRoles" },
-      { message: "Add New Role", value: "createRole" },
-      // new Separator(),
-      { message: "View All Departments", value: "viewAllDepartments" },
-      { message: "Add New Department", value: "createDepartment" },
-      // new Separator(),
-      { message: "Quit", value: "quit" },
+      { message: 'View All Employees', value: 'viewAllEmployees' },
+      { message: 'Add Employee', value: 'addEmployee' },
+      {
+        message: 'Update Employee Role',
+        value: 'updateEmployeeRole',
+      },
+      { message: '-', role: 'separator' },
+      { message: 'View All Roles', value: 'viewAllRoles' },
+      { message: 'Add New Role', value: 'addRole' },
+      { message: '-', role: 'separator' },
+      {
+        message: 'View All Departments',
+        value: 'viewAllDepartments',
+      },
+      { message: 'Add New Department', value: 'addDepartment' },
+      { message: '-', role: 'separator' },
+      { message: 'QUIT', value: 'quit' },
     ],
   }).then((res) => {
-    followUp(res);
+    commandRouter(res);
   });
 };
 

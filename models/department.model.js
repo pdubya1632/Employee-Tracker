@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = (sequelize, Sequelize) => {
   
   const Department = sequelize.define(
