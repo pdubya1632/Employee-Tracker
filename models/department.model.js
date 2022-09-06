@@ -1,9 +1,8 @@
 'use strict';
 
 module.exports = (sequelize, Sequelize) => {
-  
   const Department = sequelize.define(
-    "Department",
+    'Department',
     { title: Sequelize.STRING },
     { timestamps: false }
   );
