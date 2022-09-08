@@ -12,4 +12,4 @@ A Node CLI app for viewing/adding/editing data in the WORLD CORP Employee Databa
 
 ## Video Walkthrough
 
-Watch the app in action by watching this <a href="https://www.loom.com/share/0f165586d7074c439dffa132218a008e">video walkthrough</a>
+Watch the app in action by watching this <a href="https://www.loom.com/share/6b0d930c2aec4566aa5304a6f0b5d150">video walkthrough</a>
