@@ -1,9 +1,9 @@
 module.exports = {
-  HOST: "localhost",
-  USER: "",
-  PASSWORD: "",
-  DB: "company_db",
-  dialect: "postgres",
+  HOST: 'localhost',
+  USER: '',
+  PASSWORD: '',
+  DB: 'company_db_dev',
+  dialect: 'postgres',
 
   pool: {
     max: 5,

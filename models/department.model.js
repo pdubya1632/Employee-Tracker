@@ -3,7 +3,7 @@
 module.exports = (sequelize, Sequelize) => {
   const Department = sequelize.define(
     'Department',
-    { title: Sequelize.STRING },
+    { name: Sequelize.STRING },
     { timestamps: false }
   );
 

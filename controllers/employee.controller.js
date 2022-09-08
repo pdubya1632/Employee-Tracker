@@ -97,7 +97,7 @@ module.exports = {
       salary: input.salary,
       is_manager: input.isManager,
       managerId: input.managerId,
-      active: true,
+      is_active: true,
     })
       .then((res) => {
         console.log(

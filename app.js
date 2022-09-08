@@ -97,7 +97,7 @@ const addRole = async () => {
     {
       message: 'What is the new Role called?',
       type: 'input',
-      name: 'title',
+      name: 'name',
       validate: function validateRole(name) {
         return name !== '';
       },
@@ -109,7 +109,7 @@ const addRole = async () => {
       choices: Department.findAllChoices(),
     },
   ]).then((res) => {
-    Role.create(res.title, res.departmentId).then(() => {
+    Role.create(res.name, res.departmentId).then(() => {
       askAgain();
     });
   });
@@ -122,13 +122,13 @@ const addDepartment = async () => {
     {
       message: 'What is the new Department called?',
       type: 'input',
-      name: 'title',
+      name: 'name',
       validate: function validateDepartment(name) {
         return name !== '';
       },
     },
   ]).then((res) => {
-    Department.create(res.title).then(() => {
+    Department.create(res.name).then(() => {
       askAgain();
     });
   });

@@ -11,10 +11,10 @@ module.exports = {
         const roles = res.map((role) => role.toJSON());
 
         let choices = roles.reduce((acc, cur) => {
-          let { id, title } = cur;
+          let { id, name } = cur;
           let ex = acc.find((x) => x.id === id);
           if (!ex) {
-            ex = { id, title };
+            ex = { id, name };
             acc.push(ex);
           }
           return acc;
@@ -23,9 +23,9 @@ module.exports = {
         choices = choices.map(function (obj) {
           obj['value'] = obj['id'];
           delete obj['id'];
-          obj['message'] = obj['title'];
-          obj['name'] = obj['title'];
-          delete obj['title'];
+          obj['message'] = obj['name'];
+          obj['name'] = obj['name'];
+          delete obj['name'];
           return obj;
         });
 
@@ -36,9 +36,9 @@ module.exports = {
       });
   },
 
-  create: async (title, departmentId) => {
+  create: async (name, departmentId) => {
     return await Role.create({
-      title: title,
+      name: name,
       departmentId: departmentId,
     })
       .then((res) => {

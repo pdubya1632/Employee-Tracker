@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       salary: DataTypes.DECIMAL,
       is_manager: DataTypes.BOOLEAN,
-      active: DataTypes.BOOLEAN,
+      is_active: DataTypes.BOOLEAN,
     },
     {
       sequelize,

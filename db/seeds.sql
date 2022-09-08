@@ -1,15 +1,15 @@
-CREATE TABLE departments (
+CREATE TABLE Departments (
     id serial not null primary key,
     name varchar(30) not null
 );
 
-CREATE TABLE roles (
+CREATE TABLE Roles (
     id serial not null primary key,
     title varchar(30) not null,
     departmentId int not null references Departments(id)
 );
 
-CREATE TABLE employees (
+CREATE TABLE Employees (
     id serial not null primary key,
     first_name varchar(30) not null,
     last_name varchar(30) not null,
@@ -20,7 +20,7 @@ CREATE TABLE employees (
     is_active boolean not null
 );
 
-INSERT INTO departments (name)
+INSERT INTO "Departments" (name)
 VALUES ('Engineering'),
        ('Finance'),
        ('Legal'),
@@ -28,7 +28,7 @@ VALUES ('Engineering'),
        ('Service'),
        ('Marketing');
 
-INSERT INTO roles (title, departmentId)
+INSERT INTO "Roles" (name, "departmentId")
 VALUES ('Sales Lead', 4),
        ('Salesperson', 4),
        ('Lead Engineer', 1),
@@ -37,7 +37,7 @@ VALUES ('Sales Lead', 4),
        ('Lawyer', 3),
        ('Marketing Manager', 5);
        
-INSERT INTO employees (first_name, last_name, roleId, salary, is_manager, managerId, is_active)
+INSERT INTO "Employees" (first_name, last_name, "roleId", salary, is_manager, "managerId", is_active)
 VALUES
   ('Matt', 'Jacobson', 6, 150000, false, 8, true),
   ('Malia', 'Brown', 4, 110000, false, 4, true),

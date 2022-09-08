@@ -11,10 +11,10 @@ module.exports = {
         const shortList = res.map((record) => record.toJSON());
 
         let choices = shortList.reduce((acc, cur) => {
-          let { id, title } = cur;
+          let { id, name } = cur;
           let ex = acc.find((x) => x.id === id);
           if (!ex) {
-            ex = { id, title };
+            ex = { id, name };
             acc.push(ex);
           }
           return acc;
@@ -23,8 +23,8 @@ module.exports = {
         choices = choices.map(function (obj) {
           obj['value'] = obj['id'];
           delete obj['id'];
-          obj['message'] = obj['title'];
-          delete obj['title'];
+          obj['message'] = obj['name'];
+          delete obj['name'];
           return obj;
         });
 
@@ -35,9 +35,9 @@ module.exports = {
       });
   },
 
-  create: async (title) => {
+  create: async (name) => {
     return await Department.create({
-      title: title,
+      name: name,
     })
       .then((res) => {
         console.log(
